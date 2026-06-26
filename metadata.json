@@ -1,0 +1,9 @@
+{
+  "name": "Community Hero",
+  "description": "Civic issue reporting and AI-powered complaint routing platform for Gurugram, India.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

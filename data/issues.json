@@ -1,0 +1,127 @@
+[
+  {
+    "id": "seed-1",
+    "category": "Pothole",
+    "severity": 4,
+    "auto_description": "Multiple deep craters visible on the main tarmac road, disrupting traffic and causing safety hazards.",
+    "confidence": 0.94,
+    "lat": 28.4682,
+    "lng": 77.062,
+    "location_name": "Sector 29, Near Leisure Valley Road",
+    "photos": [
+      "/seed-pothole.jpg"
+    ],
+    "status": "Reported",
+    "confirmation_count": 5,
+    "department_name": "Municipal Corporation of Gurugram (MCG)",
+    "draft_complaint_text": "To,\nThe Commissioner,\nMunicipal Corporation of Gurugram (MCG),\nGurugram, Haryana.\n\nSubject: Urgent complaint regarding deep potholes on internal road at Sector 29.\n\nDear Sir/Madam,\n\nI am writing to draw your attention to a critical civic issue regarding severe potholes at Sector 29, Near Leisure Valley Road (Coordinates: 28.4682, 77.0620). There are multiple deep craters on this stretch that are posing a major hazard to motorists, especially two-wheelers during night hours. The severity is marked as 4 out of 5.\n\nKindly inspect this site and authorize immediate road repair work to avoid potential accidents.\n\nThank you.\n\nSincerely,\nConcerned Citizen,\nGurugram Hero App",
+    "is_hsvp_sector": false,
+    "created_at": "2026-06-20T11:07:36.561Z",
+    "updated_at": "2026-06-20T11:07:36.561Z",
+    "needs_attention": false,
+    "status_history": [
+      {
+        "status": "Reported",
+        "changed_at": "2026-06-20T11:07:36.561Z",
+        "note": "System seeded"
+      }
+    ],
+    "simulated_days_old": 4
+  },
+  {
+    "id": "seed-2",
+    "category": "Streetlight",
+    "severity": 3,
+    "auto_description": "A damaged streetlight fixture with hanging wires, making the immediate neighborhood street pitch dark.",
+    "confidence": 0.89,
+    "lat": 28.4352,
+    "lng": 77.0835,
+    "location_name": "Sector 56, Near HUDA Market Lane 3",
+    "photos": [
+      "/seed-streetlight.jpg"
+    ],
+    "status": "Verified",
+    "confirmation_count": 2,
+    "department_name": "Dakshin Haryana Bijli Vitran Nigam (DHBVN)",
+    "draft_complaint_text": "To,\nThe Executive Engineer,\nDakshin Haryana Bijli Vitran Nigam (DHBVN),\nGurugram, Haryana.\n\nSubject: Faulty streetlight and hanging wires at Sector 56.\n\nDear Sir/Madam,\n\nThis is to report that the streetlights near HUDA Market Lane 3 in Sector 56 (Coordinates: 28.4352, 77.0835) have been completely non-functional due to damaged fixtures and loose wires. The lane is unsafe after sunset.\n\nPlease arrange for an electrician to fix the streetlight and secure the electrical cables at the earliest.\n\nSincerely,\nConcerned Citizen,\nGurugram Hero App",
+    "is_hsvp_sector": false,
+    "created_at": "2026-06-23T11:07:36.561Z",
+    "updated_at": "2026-06-23T11:07:36.561Z",
+    "needs_attention": false,
+    "status_history": [
+      {
+        "status": "Reported",
+        "changed_at": "2026-06-23T11:07:36.561Z",
+        "note": "Initial report"
+      },
+      {
+        "status": "Verified",
+        "changed_at": "2026-06-23T23:07:36.561Z",
+        "note": "Verified by community inspectors"
+      }
+    ],
+    "simulated_days_old": 1
+  },
+  {
+    "id": "seed-3",
+    "category": "Water Leakage",
+    "severity": 2,
+    "auto_description": "Drinking water pipeline leakage spraying water continuously onto the pavement, causing waterlogging.",
+    "confidence": 0.95,
+    "lat": 28.4554,
+    "lng": 77.0392,
+    "location_name": "Sector 15 Part 2, Near HUDA Park",
+    "photos": [
+      "/seed-water.jpg"
+    ],
+    "status": "In Progress",
+    "confirmation_count": 1,
+    "department_name": "Municipal Corporation of Gurugram (MCG)",
+    "draft_complaint_text": "To,\nThe Commissioner,\nMunicipal Corporation of Gurugram (MCG),\nGurugram, Haryana.\n\nSubject: Severe drinking water leakage near HUDA Park in Sector 15 Part 2.\n\nDear Sir/Madam,\n\nWe would like to alert you regarding a broken pipe leaking fresh drinking water onto the pavement at Sector 15 Part 2. This is creating water pools and wasting gallons of clean water daily.\n\nKindly send an MCG plumbing crew to repair the pipeline leak.\n\nSincerely,\nConcerned Citizen,\nGurugram Hero App",
+    "is_hsvp_sector": false,
+    "created_at": "2026-06-22T11:07:36.561Z",
+    "updated_at": "2026-06-23T11:07:36.561Z",
+    "needs_attention": false,
+    "status_history": [
+      {
+        "status": "Reported",
+        "changed_at": "2026-06-22T11:07:36.561Z"
+      },
+      {
+        "status": "In Progress",
+        "changed_at": "2026-06-23T11:07:36.561Z",
+        "note": "Assigned to Ward Junior Engineer"
+      }
+    ],
+    "simulated_days_old": 2
+  },
+  {
+    "id": "seed-4",
+    "category": "Waste Management",
+    "severity": 5,
+    "auto_description": "Large dump of mixed municipal plastic waste, organic garbage, and construction debris blocking the footpath.",
+    "confidence": 0.97,
+    "lat": 28.4812,
+    "lng": 77.0718,
+    "location_name": "Near IFFCO Chowk Metro Station Exit",
+    "photos": [
+      "/seed-garbage.jpg"
+    ],
+    "status": "Reported",
+    "confirmation_count": 8,
+    "department_name": "Gurugram Metropolitan Development Authority (GMDA)",
+    "draft_complaint_text": "To,\nThe Chief Executive Officer,\nGurugram Metropolitan Development Authority (GMDA),\nGurugram, Haryana.\n\nSubject: Immediate request for clearance of massive garbage accumulation near IFFCO Chowk Metro.\n\nDear Sir/Madam,\n\nThis is to formally highlight the extreme garbage heap right near the IFFCO Chowk Metro Station Exit (Coordinates: 28.4812, 77.0718). It blocks the sidewalk, emits a foul odor, and presents serious public health risks. The severity is 5.\n\nWe request a high-capacity cleaning team to clear this dump instantly.\n\nSincerely,\nConcerned Citizen,\nGurugram Hero App",
+    "is_hsvp_sector": false,
+    "created_at": "2026-06-19T11:07:36.561Z",
+    "updated_at": "2026-06-19T11:07:36.561Z",
+    "needs_attention": false,
+    "status_history": [
+      {
+        "status": "Reported",
+        "changed_at": "2026-06-19T11:07:36.561Z",
+        "note": "Reported by commuters"
+      }
+    ],
+    "simulated_days_old": 5
+  }
+]
