@@ -51,7 +51,7 @@ export default function SignInScreen({ onSignIn }: SignInScreenProps) {
             <Sparkles className="w-6 h-6 text-emerald-300 animate-pulse" />
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-2">
-            Community Hero <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded font-extrabold uppercase font-sans">Gurugram</span>
+            Community Hero
           </h2>
           <p className="mt-2 text-xs text-slate-400 font-medium">
             Civic Tech Platform & Overlapping Jurisdiction Routing

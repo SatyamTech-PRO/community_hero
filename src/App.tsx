@@ -228,7 +228,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="font-display font-black text-base sm:text-lg text-slate-900 tracking-tight leading-none flex items-center gap-1.5">
-                Community Hero <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded font-extrabold uppercase font-sans">Gurugram</span>
+                Community Hero
               </h1>
               <p className="text-[10.5px] text-slate-400 font-medium leading-none mt-1">Civic Tech Platform & Overlapping Jurisdiction Routing</p>
             </div>
