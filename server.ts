@@ -30,6 +30,16 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
+// Debug log helper to write logs to a file for auditing/proofing
+function logDebug(message: string) {
+  console.log(message);
+  try {
+    fs.appendFileSync(path.join(process.cwd(), "server_debug.log"), `${new Date().toISOString()} ${message}\n`);
+  } catch (err) {
+    // ignore
+  }
+}
+
 interface Issue {
   id: string;
   category: "Pothole" | "Water Leakage" | "Streetlight" | "Waste Management" | "Infrastructure" | "Other";
@@ -192,6 +202,17 @@ function getDistanceInMeters(lat1: number, lon1: number, lat2: number, lon2: num
   return R * c;
 }
 
+const GURUGRAM_CENTER_LAT = 28.4595;
+const GURUGRAM_CENTER_LNG = 77.0266;
+const GURUGRAM_RADIUS_METERS = 30000; // 30 km radius threshold
+
+function isLocationInGurugram(lat: number, lng: number): { inside: boolean; distanceKm: number } {
+  const distMeters = getDistanceInMeters(lat, lng, GURUGRAM_CENTER_LAT, GURUGRAM_CENTER_LNG);
+  const distanceKm = distMeters / 1000;
+  const inside = distMeters <= GURUGRAM_RADIUS_METERS;
+  return { inside, distanceKm };
+}
+
 app.use(express.json({ limit: "50mb" }));
 
 // Serve local upload files
@@ -216,6 +237,10 @@ app.get("/api/issues", (req, res) => {
 
 // 2. Clear / Reset database to seed issues
 app.post("/api/issues/reset", (req, res) => {
+  const { name } = req.body;
+  const resetBy = name || "Unspecified Official";
+  logDebug(`[RESET DB] Database reset by ${resetBy}`);
+
   const currentIssues = loadIssues();
   console.log(`[RESET DB] Received reset request. Count BEFORE reset: ${currentIssues.length}, IDs:`, currentIssues.map(i => i.id));
   console.log("RESET DB: writing to", ISSUES_FILE);
@@ -439,7 +464,8 @@ app.post("/api/analyze-image", async (req, res) => {
 app.post("/api/draft-complaint", async (req, res) => {
   const { category, severity, auto_description, lat, lng, location_name, is_hsvp_sector } = req.body;
 
-  const isGurugram = (lat >= 28.15 && lat <= 28.65 && lng >= 76.75 && lng <= 77.30);
+  const { inside: isGurugram, distanceKm } = isLocationInGurugram(lat, lng);
+  logDebug(`[API DRAFT COMPLAINT] Received coordinates: Lat ${lat}, Lng ${lng}. Calculated distance from Gurugram Center is ${distanceKm.toFixed(2)} km. Judged inside threshold (30km): ${isGurugram}`);
 
   let attempts = 0;
   const maxAttempts = 2;
@@ -598,9 +624,11 @@ app.post("/api/issues", (req, res) => {
   const issues = loadIssues();
 
   // Deduplication check: status is NOT Resolved AND same category AND within 100 meters
-  console.log(`\n--- [DEDUP CHECK] New Submission received ---`);
-  console.log(`Category: "${category}", Lat: ${lat}, Lng: ${lng}`);
-  console.log(`Checking against ${issues.length} existing tickets...`);
+  logDebug(`\n--- [SUBMIT ISSUE] New Submission received ---`);
+  const { inside: isGurugram, distanceKm } = isLocationInGurugram(lat, lng);
+  logDebug(`[BOUNDARY CHECK] Lat: ${lat}, Lng: ${lng}. Distance from Gurugram Center (${GURUGRAM_CENTER_LAT}, ${GURUGRAM_CENTER_LNG}) is ${distanceKm.toFixed(2)} km. Inside threshold (30km): ${isGurugram}`);
+  console.log(`Category: "${category}"`);
+  console.log(`Checking against ${issues.length} existing tickets for deduplication...`);
 
   const MATCH_THRESHOLD_METERS = 100;
   const duplicateIssue = issues.find((issue) => {
@@ -679,11 +707,11 @@ app.post("/api/issues", (req, res) => {
     confidence,
     lat,
     lng,
-    location_name: location_name || (lat >= 28.15 && lat <= 28.65 && lng >= 76.75 && lng <= 77.30 ? `Sector, Gurugram (${lat.toFixed(4)}, ${lng.toFixed(4)})` : `External Area (${lat.toFixed(4)}, ${lng.toFixed(4)})`),
+    location_name: location_name || (isGurugram ? `Sector, Gurugram (${lat.toFixed(4)}, ${lng.toFixed(4)})` : `External Area (${lat.toFixed(4)}, ${lng.toFixed(4)})`),
     photos: savedPhotoUrl ? [savedPhotoUrl] : [],
     status: "Reported",
     confirmation_count: 1,
-    department_name: department_name || (lat >= 28.15 && lat <= 28.65 && lng >= 76.75 && lng <= 77.30 ? "Municipal Corporation of Gurugram (MCG)" : "Local Civic Authority (Non-Gurugram Fallback)"),
+    department_name: department_name || (isGurugram ? "Municipal Corporation of Gurugram (MCG)" : "Local Civic Authority (Non-Gurugram Fallback)"),
     draft_complaint_text: draft_complaint_text || "Formal complaint drafting in progress.",
     is_hsvp_sector: !!is_hsvp_sector,
     created_at: new Date().toISOString(),

@@ -123,5 +123,76 @@
       }
     ],
     "simulated_days_old": 5
+  },
+  {
+    "id": "issue-1782730685986",
+    "category": "Waste Management",
+    "severity": 5,
+    "auto_description": "Large dump of mixed municipal plastic waste, organic garbage, and construction debris blocking the footpath.",
+    "confidence": 0.99,
+    "lat": 21.5051626503799,
+    "lng": 29.0372078140089,
+    "location_name": "Gurugram Lat 28.5019, Lng 77.0372",
+    "photos": [
+      "/uploads/issue_1782730685985_859.png"
+    ],
+    "status": "Reported",
+    "confirmation_count": 1,
+    "department_name": "Local Civic Authority (Non-Gurugram Fallback)",
+    "draft_complaint_text": "To,\nThe Commissioner/Head,\nLocal Civic Authority (Non-Gurugram Fallback),\nLocal Administration.\n\nSubject: Formal Complaint: Waste Management issue.\n\nDear Sir/Madam,\n\nWe hereby bring to your attention a civic grievance categorized under \"Waste Management\" located at coordinates 21.5051626503799, 29.0372078140089 (Gurugram Lat 28.5019, Lng 77.0372).\n\nGoogle Maps Link: https://www.google.com/maps/search/?api=1&query=21.5051626503799,29.0372078140089\n\nThe issue is described as: Large dump of mixed municipal plastic waste, organic garbage, and construction debris blocking the footpath..\n\nGiven the severity rating of 5/5, we request your department to inspect this spot and implement a swift repair/cleanup strategy to prevent further inconvenience to local residents and commuters.\n\nThank you,\nConcerned Citizen,\nCommunity Hero Platform",
+    "is_hsvp_sector": false,
+    "created_at": "2026-06-29T10:58:05.986Z",
+    "updated_at": "2026-06-29T10:58:05.986Z",
+    "needs_attention": false,
+    "status_history": [
+      {
+        "status": "Reported",
+        "changed_at": "2026-06-29T10:58:05.986Z",
+        "note": "Civic issue reported initially via Community Hero portal by Satyam Kumar."
+      }
+    ],
+    "raw_analysis_json": "{\n  \"category\": \"Waste Management\",\n  \"severity\": 5,\n  \"auto_description\": \"Large dump of mixed municipal plastic waste, organic garbage, and construction debris blocking the footpath.\",\n  \"confidence\": 0.99\n}",
+    "raw_complaint_json": "{\"error\":\"{\\\"error\\\":{\\\"code\\\":503,\\\"message\\\":\\\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\\\",\\\"status\\\":\\\"UNAVAILABLE\\\"}}\"}",
+    "simulated_days_old": 0,
+    "reporter_name": "Satyam Kumar",
+    "confirmers": [
+      "Satyam Kumar"
+    ]
+  },
+  {
+    "id": "issue-1782734204434",
+    "category": "Pothole",
+    "severity": 5,
+    "auto_description": "Huge cavernous pothole near Dadar station, causing severe traffic slowing and safety hazard.",
+    "confidence": 0.98,
+    "lat": 19.076,
+    "lng": 72.8777,
+    "location_name": "External Area (Dadar, Mumbai)",
+    "photos": [],
+    "status": "Reported",
+    "confirmation_count": 2,
+    "department_name": "Local Civic Authority (Non-Gurugram Fallback)",
+    "draft_complaint_text": "To,\nThe Commissioner/Head,\nLocal Civic Authority (Non-Gurugram Fallback),\nLocal Administration.\n\nSubject: Formal Complaint: Pothole issue.\n\nDear Sir/Madam,\n\nWe hereby bring to your attention a civic grievance categorized under \"Pothole\" located at coordinates 19.076, 72.8777 (External Area (Dadar, Mumbai)).\n\nGoogle Maps Link: https://www.google.com/maps/search/?api=1&query=19.076,72.8777\n\nThe issue is described as: Huge cavernous pothole near Dadar station, causing severe traffic slowing and safety hazard..\n\nGiven the severity rating of 5/5, we request your department to inspect this spot and implement a swift repair/cleanup strategy to prevent further inconvenience to local residents and commuters.\n\nThank you,\nConcerned Citizen,\nCommunity Hero Platform",
+    "is_hsvp_sector": false,
+    "created_at": "2026-06-29T11:56:44.434Z",
+    "updated_at": "2026-06-29T11:59:09.832Z",
+    "needs_attention": false,
+    "status_history": [
+      {
+        "status": "Reported",
+        "changed_at": "2026-06-29T11:56:44.434Z",
+        "note": "Civic issue reported initially via Community Hero portal by Dadar Resident."
+      },
+      {
+        "status": "Reported",
+        "changed_at": "2026-06-29T11:59:09.832Z",
+        "note": "Duplicate issue reported within 100m of coordinates (19.0760, 72.8777). Incrementing confirmation count & attaching new photo. Confirmed by Dadar Resident."
+      }
+    ],
+    "simulated_days_old": 0,
+    "reporter_name": "Dadar Resident",
+    "confirmers": [
+      "Dadar Resident"
+    ]
   }
 ]

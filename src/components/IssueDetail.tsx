@@ -7,6 +7,7 @@ interface IssueDetailProps {
   onStatusChanged: (issueId: string, status: IssueStatus, note: string) => void;
   onConfirmClicked: (issueId: string) => void;
   onBackToList?: () => void;
+  onResetDatabase: (name: string) => void;
 }
 
 export default function IssueDetail({
@@ -14,11 +15,33 @@ export default function IssueDetail({
   onStatusChanged,
   onConfirmClicked,
   onBackToList,
+  onResetDatabase
 }: IssueDetailProps) {
   const [activeTab, setActiveTab] = useState<"details" | "complaint" | "developer">("details");
   const [copied, setCopied] = useState<boolean>(false);
   const [statusNote, setStatusNote] = useState<string>("");
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<boolean>(false);
+
+  // Official Identity Capture
+  const [officialName, setOfficialName] = useState<string>(() => {
+    return localStorage.getItem("official_name") || "";
+  });
+  const [officialDesignation, setOfficialDesignation] = useState<string>(() => {
+    return localStorage.getItem("official_designation") || "";
+  });
+
+  const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
+  const [resetConfirmName, setResetConfirmName] = useState<string>("");
+
+  const handleOfficialNameChange = (val: string) => {
+    setOfficialName(val);
+    localStorage.setItem("official_name", val);
+  };
+
+  const handleOfficialDesignationChange = (val: string) => {
+    setOfficialDesignation(val);
+    localStorage.setItem("official_designation", val);
+  };
 
   const handleCopyComplaint = () => {
     navigator.clipboard.writeText(issue.draft_complaint_text);
@@ -27,7 +50,13 @@ export default function IssueDetail({
   };
 
   const handleStatusUpdateSubmit = (status: IssueStatus) => {
-    onStatusChanged(issue.id, status, statusNote.trim() || `Status manually advanced to ${status}.`);
+    let noteText = statusNote.trim() || `Status manually advanced to ${status}.`;
+    if (officialName || officialDesignation) {
+      const namePart = officialName ? officialName : "Unspecified Official";
+      const desPart = officialDesignation ? `, ${officialDesignation}` : "";
+      noteText += ` [Status updated by ${namePart}${desPart}]`;
+    }
+    onStatusChanged(issue.id, status, noteText);
     setStatusNote("");
     setIsUpdatingStatus(false);
   };
@@ -212,9 +241,7 @@ export default function IssueDetail({
                 <ThumbsUp className="w-3.5 h-3.5" />
                 I see this too ({issue.confirmation_count})
               </button>
-            </div>
-
-            {/* Manual Status Admin controls */}
+            </div>            {/* Manual Status Admin controls */}
             <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/20">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
@@ -229,6 +256,30 @@ export default function IssueDetail({
                     Change Status
                   </button>
                 )}
+              </div>
+
+              {/* Official Identity Attribution Sub-panel */}
+              <div className="grid grid-cols-2 gap-2 mb-3 bg-white p-2.5 rounded-lg border border-slate-200/80">
+                <div>
+                  <label className="block text-[9px] font-extrabold uppercase text-slate-400 mb-0.5">Official Name</label>
+                  <input
+                    type="text"
+                    value={officialName}
+                    onChange={(e) => handleOfficialNameChange(e.target.value)}
+                    placeholder="e.g. S. K. Verma"
+                    className="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-[11px] focus:border-blue-500 outline-none text-slate-700 font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[9px] font-extrabold uppercase text-slate-400 mb-0.5">Title / Designation</label>
+                  <input
+                    type="text"
+                    value={officialDesignation}
+                    onChange={(e) => handleOfficialDesignationChange(e.target.value)}
+                    placeholder="e.g. Executive Engineer, MCG"
+                    className="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-[11px] focus:border-blue-500 outline-none text-slate-700 font-medium"
+                  />
+                </div>
               </div>
 
               {isUpdatingStatus ? (
@@ -270,9 +321,76 @@ export default function IssueDetail({
                 </div>
               ) : (
                 <div className="text-[10.5px] text-slate-500 leading-relaxed">
-                  Active status is currently <span className="font-extrabold text-slate-700">"{issue.status}"</span>. Anyone can click 'Change Status' to simulate verified field investigations or maintenance completions.
+                  Active status is currently <span className="font-extrabold text-slate-700">"{issue.status}"</span>. Enter your name above and click 'Change Status' to simulate verified investigations or maintenance completions.
                 </div>
               )}
+
+              {/* Divider and Database Reset Button */}
+              <div className="mt-4 pt-3 border-t border-slate-200/60">
+                {!showResetConfirm ? (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider">System Recovery</span>
+                    <button
+                      onClick={() => {
+                        setShowResetConfirm(true);
+                        setResetConfirmName(officialName); // pre-fill with official name if they have typed it!
+                      }}
+                      className="flex items-center gap-1 bg-white hover:bg-rose-50 border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-200 text-[10px] font-bold py-1 px-2 rounded-lg transition-all cursor-pointer"
+                      title="Reset Database to Pristine Seeds"
+                    >
+                      <RefreshCw className="w-3 h-3" />
+                      Reset DB
+                    </button>
+                  </div>
+                ) : (
+                  <div className="bg-rose-50/70 border border-rose-100 rounded-lg p-2.5 space-y-2 mt-1">
+                    <div className="flex items-start gap-1.5 text-rose-800">
+                      <ShieldAlert className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                      <div className="text-[10px] leading-snug">
+                        <p className="font-extrabold text-rose-950">Database Reset Action</p>
+                        <p className="font-medium text-rose-700/90 mt-0.5">This will delete all custom reported issues and restore mock seed tickets. This action is irreversible.</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[9px] font-bold uppercase text-rose-800 mb-0.5">Type your name to confirm:</label>
+                      <input
+                        type="text"
+                        value={resetConfirmName}
+                        onChange={(e) => setResetConfirmName(e.target.value)}
+                        placeholder="Type your official name..."
+                        className="w-full bg-white border border-rose-200/80 rounded px-2 py-1 text-xs focus:border-rose-500 outline-none text-slate-800 font-bold"
+                      />
+                    </div>
+
+                    <div className="flex gap-2 justify-end">
+                      <button
+                        onClick={() => {
+                          setShowResetConfirm(false);
+                          setResetConfirmName("");
+                        }}
+                        className="text-[9.5px] font-bold text-slate-500 hover:bg-slate-100/80 px-2 py-1 rounded cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (!resetConfirmName.trim()) {
+                            alert("Please type your name to confirm.");
+                            return;
+                          }
+                          onResetDatabase(resetConfirmName.trim());
+                          setShowResetConfirm(false);
+                          setResetConfirmName("");
+                        }}
+                        className="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[9.5px] px-2.5 py-1 rounded shadow-xs transition-all cursor-pointer"
+                      >
+                        Confirm Reset
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Status History Timeline */}

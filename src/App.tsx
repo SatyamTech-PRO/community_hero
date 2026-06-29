@@ -5,6 +5,7 @@ import ReportForm from "./components/ReportForm";
 import IssueDetail from "./components/IssueDetail";
 import Dashboard from "./components/Dashboard";
 import SignInScreen from "./components/SignInScreen";
+import DepartmentView from "./components/DepartmentView";
 import {
   Layers,
   MapPin,
@@ -22,7 +23,8 @@ import {
   User,
   Mail,
   LogOut,
-  UserCheck
+  UserCheck,
+  Building2
 } from "lucide-react";
 
 export default function App() {
@@ -49,7 +51,7 @@ export default function App() {
   };
 
   // Navigation & Page State
-  const [activeTab, setActiveTab] = useState<"report" | "map" | "dashboard">("map");
+  const [activeTab, setActiveTab] = useState<"report" | "map" | "dashboard" | "department">("map");
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
 
   // Issues Data Store
@@ -172,14 +174,18 @@ export default function App() {
   };
 
   // Reset Database to Seed Values
-  const handleResetDatabase = async () => {
+  const handleResetDatabase = async (officialName: string = "Unspecified Official") => {
     try {
-      const res = await fetch("/api/issues/reset", { method: "POST" });
+      const res = await fetch("/api/issues/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: officialName })
+      });
       if (res.ok) {
         const data = await res.json();
         setIssues(data.issues);
         setSelectedIssueId(null);
-        setSimulationToast("Database cleared and reset to pristine mock seed tickets.");
+        setSimulationToast(`Database successfully reset by ${officialName}!`);
         setTimeout(() => setSimulationToast(null), 3000);
       }
     } catch (err) {
@@ -272,6 +278,20 @@ export default function App() {
               <BarChart3 className="w-4 h-4" />
               Impact Dashboard
             </button>
+            <button
+              onClick={() => {
+                setActiveTab("department");
+                setSelectedIssueId(null);
+              }}
+              className={`flex items-center gap-1.5 py-2 px-3.5 rounded-lg border transition-all cursor-pointer ${
+                activeTab === "department"
+                  ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                  : "bg-white hover:bg-slate-50 text-slate-600 border-slate-200"
+              }`}
+            >
+              <Building2 className="w-4 h-4" />
+              Department View
+            </button>
           </nav>
 
           {/* Actions panel */}
@@ -296,16 +316,6 @@ export default function App() {
                 {isSimulating ? "Fast-forwarding..." : "FF Days & Audit"}
               </button>
             </div>
-
-            {/* Reset Button */}
-            <button
-              onClick={handleResetDatabase}
-              className="flex items-center gap-1 bg-white hover:bg-rose-50 border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-200 text-[10.5px] font-bold py-2 px-2.5 rounded-xl transition-all cursor-pointer"
-              title="Reset Database to Seeds"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset DB
-            </button>
           </div>
 
           {/* User Profile & Sign Out */}
@@ -380,6 +390,19 @@ export default function App() {
                 <BarChart3 className="w-4 h-4 text-emerald-600" />
                 Impact Dashboard
               </button>
+              <button
+                onClick={() => {
+                  setActiveTab("department");
+                  setSelectedIssueId(null);
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold text-left ${
+                  activeTab === "department" ? "bg-blue-50 text-blue-700 font-extrabold" : "text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                <Building2 className="w-4 h-4 text-purple-600" />
+                Department View
+              </button>
             </div>
 
             {/* Simulated actions on mobile */}
@@ -407,16 +430,6 @@ export default function App() {
                   </button>
                 </div>
               </div>
-              <button
-                onClick={() => {
-                  handleResetDatabase();
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-1.5 bg-rose-50 border border-rose-100 text-rose-700 font-bold text-xs py-2 rounded-lg"
-              >
-                <RotateCcw className="w-4 h-4 text-rose-600" />
-                Reset Sample Seed Database
-              </button>
             </div>
           </div>
         )}
@@ -577,6 +590,7 @@ export default function App() {
                         onConfirmClicked={handleConfirmIssue}
                         onStatusChanged={handleStatusChanged}
                         onBackToList={() => setSelectedIssueId(null)}
+                        onResetDatabase={handleResetDatabase}
                       />
                     </div>
                   )}
@@ -592,6 +606,16 @@ export default function App() {
                   setSelectedIssueId(issue.id);
                   setActiveTab("map");
                 }}
+              />
+            )}
+
+            {/* 4. DEPARTMENT VIEW TAB */}
+            {activeTab === "department" && (
+              <DepartmentView
+                issues={issues}
+                onConfirmClicked={handleConfirmIssue}
+                onStatusChanged={handleStatusChanged}
+                onResetDatabase={handleResetDatabase}
               />
             )}
           </>

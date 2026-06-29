@@ -78,9 +78,17 @@ export default function ReportForm({ onReportSubmitted, onNavigateToMap }: Repor
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          setLocationName(`Gurugram Lat ${position.coords.latitude.toFixed(4)}, Lng ${position.coords.longitude.toFixed(4)}`);
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setLatitude(lat);
+          setLongitude(lng);
+          // Check if coordinates are within the 30km radius of Gurugram center
+          const isGurugramLoc = (Math.abs(lat - 28.4595) < 0.27 && Math.abs(lng - 77.0266) < 0.29); // approx 30km box for frontend display
+          if (isGurugramLoc) {
+            setLocationName(`Gurugram Lat ${lat.toFixed(4)}, Lng ${lng.toFixed(4)}`);
+          } else {
+            setLocationName(`External Area Lat ${lat.toFixed(4)}, Lng ${lng.toFixed(4)}`);
+          }
         },
         (err) => {
           console.warn("Initial automatic geolocation prompt error or denied:", err);
@@ -122,27 +130,30 @@ export default function ReportForm({ onReportSubmitted, onNavigateToMap }: Repor
     setAiComplaint(null);
     setError(null);
 
-    // Auto-match locations to match the seeds for exciting dedup/merge demos!
-    if (key === "Pothole") {
-      setLatitude(28.4682);
-      setLongitude(77.0620);
-      setLocationName("Sector 29, Near Leisure Valley Road");
-      setIsHsvpSector(false);
-    } else if (key === "Streetlight") {
-      setLatitude(28.4352);
-      setLongitude(77.0835);
-      setLocationName("Sector 56, Near HUDA Market Lane 3");
-      setIsHsvpSector(true);
-    } else if (key === "Waste") {
-      setLatitude(28.4812);
-      setLongitude(77.0718);
-      setLocationName("Near IFFCO Chowk Metro Station Exit");
-      setIsHsvpSector(false);
-    } else if (key === "Water") {
-      setLatitude(28.4554);
-      setLongitude(77.0392);
-      setLocationName("Sector 15 Part 2, Near HUDA Park");
-      setIsHsvpSector(false);
+    // Auto-match locations to match the seeds for exciting dedup/merge demos only if coordinates are at default
+    const isDefaultCoords = (latitude === 28.4682 && longitude === 77.0620);
+    if (isDefaultCoords) {
+      if (key === "Pothole") {
+        setLatitude(28.4682);
+        setLongitude(77.0620);
+        setLocationName("Sector 29, Near Leisure Valley Road");
+        setIsHsvpSector(false);
+      } else if (key === "Streetlight") {
+        setLatitude(28.4352);
+        setLongitude(77.0835);
+        setLocationName("Sector 56, Near HUDA Market Lane 3");
+        setIsHsvpSector(true);
+      } else if (key === "Waste") {
+        setLatitude(28.4812);
+        setLongitude(77.0718);
+        setLocationName("Near IFFCO Chowk Metro Station Exit");
+        setIsHsvpSector(false);
+      } else if (key === "Water") {
+        setLatitude(28.4554);
+        setLongitude(77.0392);
+        setLocationName("Sector 15 Part 2, Near HUDA Park");
+        setIsHsvpSector(false);
+      }
     }
   };
 
@@ -160,9 +171,17 @@ export default function ReportForm({ onReportSubmitted, onNavigateToMap }: Repor
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-        setLocationName(`Gurugram Lat ${position.coords.latitude.toFixed(4)}, Lng ${position.coords.longitude.toFixed(4)}`);
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setLatitude(lat);
+        setLongitude(lng);
+        // Check if coordinates are within the 30km radius of Gurugram center
+        const isGurugramLoc = (Math.abs(lat - 28.4595) < 0.27 && Math.abs(lng - 77.0266) < 0.29); // approx 30km box for frontend display
+        if (isGurugramLoc) {
+          setLocationName(`Gurugram Lat ${lat.toFixed(4)}, Lng ${lng.toFixed(4)}`);
+        } else {
+          setLocationName(`External Area Lat ${lat.toFixed(4)}, Lng ${lng.toFixed(4)}`);
+        }
         setLoading(false);
       },
       (err) => {
