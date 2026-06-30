@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import bcrypt from "bcryptjs";
 import { GoogleGenAI, Type } from "@google/genai";
 import { createServer as createViteServer } from "vite";
 
@@ -225,6 +226,112 @@ app.get("/seed-water.jpg", (req, res) => res.status(404).send());
 app.get("/seed-garbage.jpg", (req, res) => res.status(404).send());
 
 // API Endpoints
+
+const USERS_FILE = path.join(DATA_DIR, "users.json");
+
+interface UserAccount {
+  name: string;
+  email: string;
+  passwordHash: string;
+  createdAt: string;
+}
+
+function loadUsers(): UserAccount[] {
+  if (!fs.existsSync(USERS_FILE)) {
+    try {
+      fs.writeFileSync(USERS_FILE, JSON.stringify([], null, 2), "utf-8");
+    } catch (err) {
+      console.error("Error creating users.json:", err);
+    }
+    return [];
+  }
+  try {
+    const data = fs.readFileSync(USERS_FILE, "utf-8");
+    return JSON.parse(data);
+  } catch (err) {
+    console.error("Error loading users database:", err);
+    return [];
+  }
+}
+
+function saveUsers(users: UserAccount[]) {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Error saving users database:", err);
+  }
+}
+
+// 0. User Authentication Endpoint
+app.post("/api/auth/signin", (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedName = (name || "").trim();
+
+    // Password validation regex
+    // minimum 8 characters, at least one uppercase letter, one lowercase letter, one number, and one special character
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const users = loadUsers();
+    const existingUser = users.find(u => u.email === trimmedEmail);
+
+    if (existingUser) {
+      // User exists, verify password
+      const match = bcrypt.compareSync(password, existingUser.passwordHash);
+      if (!match) {
+        logDebug(`[AUTH] Failed login attempt for ${trimmedEmail}: Incorrect password`);
+        return res.status(401).json({ error: "Incorrect password" });
+      }
+      logDebug(`[AUTH] User ${trimmedEmail} logged in successfully`);
+      return res.json({ 
+        success: true, 
+        message: "Logged in successfully",
+        user: { name: existingUser.name, email: existingUser.email } 
+      });
+    } else {
+      // User does not exist, sign-up flow
+      if (!trimmedName) {
+        return res.status(400).json({ error: "Name is required for first-time sign up" });
+      }
+      if (trimmedName.length < 2) {
+        return res.status(400).json({ error: "Name must be at least 2 characters" });
+      }
+      if (!passwordRegex.test(password)) {
+        return res.status(400).json({ 
+          error: "Password does not meet complexity requirements: 8+ characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character." 
+        });
+      }
+
+      // Hash password and store user
+      const passwordHash = bcrypt.hashSync(password, 10);
+      const newUser: UserAccount = {
+        name: trimmedName,
+        email: trimmedEmail,
+        passwordHash,
+        createdAt: new Date().toISOString()
+      };
+
+      users.push(newUser);
+      saveUsers(users);
+
+      logDebug(`[AUTH] New user registered: ${trimmedEmail}`);
+      return res.status(201).json({ 
+        success: true, 
+        message: "Account created and logged in successfully",
+        user: { name: newUser.name, email: newUser.email } 
+      });
+    }
+  } catch (err: any) {
+    console.error("Auth API Error:", err);
+    return res.status(500).json({ error: "Internal server error during authentication" });
+  }
+});
 
 // 1. Get all issues
 app.get("/api/issues", (req, res) => {
